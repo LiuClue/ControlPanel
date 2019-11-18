@@ -1,4 +1,7 @@
 <?php
+  echo 'check23   ';
+	date_default_timezone_set("America/Toronto");
+	echo "The time is " . date("Y/m/d h:i:sa");
 	/* Database connection settings */
 	$host = 'localhost';
 	$user = 'root';
@@ -10,7 +13,7 @@
 	$data2 = '';
 
 	//query to get data from the table
-	$sql = "SELECT * FROM `light` ";
+	$sql = "SELECT * FROM `light` ORDER BY date DESC";
     $result = mysqli_query($mysqli, $sql);
 
 	//loop through the returned data
@@ -58,39 +61,60 @@
 			<canvas id="chart" style="width: 100%; height: 65vh; background: #222; border: 1px solid #555652; margin-top: 10px;"></canvas>
 
 			<script>
-
 				var ctx = document.getElementById("chart").getContext('2d');
-				var xlabels =[<?php echo $data2;?>];
-		        console.log(xlabels);
+				var xlabels =[<?php echo $data1;?>];
+				var ylabels =[<?php echo $data2;?>];
+				ylabels[0] = new Date(ylabels[0]);
+				ylabels[0] = new Date(ylabels[1]);
+		    console.log(ylabels[0]);
+		    console.log(xlabels[0]);
+			  
     			var myChart = new Chart(ctx, {
         		type: 'line',
 		        data: {
-		            labels: xlabels,
+		            labels: ylabels,
 		            datasets: 
 		            [{
+		            		data: [{
+			            		y: xlabels[0],
+		    							x: ylabels[0]
+			    						}],
 		                label: 'Data 1',
-		                data: [<?php echo $data1; ?>],
 		                backgroundColor: 'transparent',
 		                borderColor:'rgba(255,99,132)',
 		                borderWidth: 3
-		            },
-
-		            {
-		            	label: 'Data 2',
-		                data: [<?php echo $data2; ?>],
-		                backgroundColor: 'transparent',
-		                borderColor:'rgba(0,255,255)',
-		                borderWidth: 3	
 		            }]
 		        },
 		     
 		        options: {
-		            scales: {scales:{yAxes: [{beginAtZero: false}], xAxes: [{autoskip: true, maxTicketsLimit: 20}]}},
-		            tooltips:{mode: 'index'},
-		            legend:{display: true, position: 'top', labels: {fontColor: 'rgb(255,255,255)', fontSize: 16}}
+		        	scales: {
+		        		xAxes: [{
+		        			type: 'time',
+		        			time: {
+		        				displayFormats: 
+		        				{
+		        					second: 'MMM D h:mm:ss a'
+		        				}
+		        			}
+		        		}]
+		        	}
 		        }
 
 		    });
+		    for (var i = 0; i < xlabels.length;i++)
+		    {
+		    myChart.data.datasets.push({
+		    	label: i,
+		      backgroundColor: 'transparent',
+		      borderColor:'rgba(255,99,132)',
+		      borderWidth: 3,
+		    	data:[{
+		    		y: xlabels[i],
+		    		x: ylabels[i]
+			    	}]
+		    })
+		  	}
+		    myChart.update();
 			</script>
 	    </div>
 	    
