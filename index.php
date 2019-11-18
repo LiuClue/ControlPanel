@@ -30,7 +30,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-			<meta http-equiv="refresh" content="15; url=index.php">
     	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 		<title>Accelerometer data</title>
@@ -65,20 +64,62 @@
 				var xlabels =[<?php echo $data1;?>];
 				var ylabels =[<?php echo $data2;?>];
 				ylabels[0] = new Date(ylabels[0]);
-				ylabels[0] = new Date(ylabels[1]);
-		    console.log(ylabels[0]);
-		    console.log(xlabels[0]);
+				ylabels[1] = new Date(ylabels[1]);
+		    	console.log(ylabels[0]);
+		    	console.log(xlabels[0]);
 			  
     			var myChart = new Chart(ctx, {
         		type: 'line',
 		        data: {
 		            labels: ylabels,
 		            datasets: 
-		            [{
+		            	[{
 		            		data: [{
 			            		y: xlabels[0],
-		    							x: ylabels[0]
-			    						}],
+		    					x: ylabels[0]},
+		    					{
+			            		y: xlabels[1],
+		    					x: ylabels[1]},
+		    					{
+			            		y: xlabels[2],
+		    					x: ylabels[2]},
+		    					{
+			            		y: xlabels[3],
+		    					x: ylabels[3]},
+		    					{
+			            		y: xlabels[4],
+		    					x: ylabels[4]},
+		    					{
+			            		y: xlabels[5],
+		    					x: ylabels[6]},
+		    					{
+			            		y: xlabels[7],
+		    					x: ylabels[7]},
+		    					{
+			            		y: xlabels[8],
+		    					x: ylabels[8]},
+		    					{
+			            		y: xlabels[9],
+		    					x: ylabels[9]},
+		    					{
+			            		y: xlabels[10],
+		    					x: ylabels[10]},
+		    					{
+			            		y: xlabels[11],
+		    					x: ylabels[11]},
+		    					{
+			            		y: xlabels[12],
+		    					x: ylabels[12]},
+		    					{
+			            		y: xlabels[13],
+		    					x: ylabels[13]},
+		    					{
+			            		y: xlabels[14],
+		    					x: ylabels[14]},
+		    					{
+			            		y: xlabels[15],
+		    					x: ylabels[15]
+		    			}],
 		                label: 'Data 1',
 		                backgroundColor: 'transparent',
 		                borderColor:'rgba(255,99,132)',
@@ -91,30 +132,19 @@
 		        		xAxes: [{
 		        			type: 'time',
 		        			time: {
+		        				min: ylabels[10],
+		        				max: ylabels[0],
 		        				displayFormats: 
 		        				{
 		        					second: 'MMM D h:mm:ss a'
 		        				}
-		        			}
+		        			},
 		        		}]
 		        	}
 		        }
 
 		    });
-		    for (var i = 0; i < xlabels.length;i++)
-		    {
-		    myChart.data.datasets.push({
-		    	label: i,
-		      backgroundColor: 'transparent',
-		      borderColor:'rgba(255,99,132)',
-		      borderWidth: 3,
-		    	data:[{
-		    		y: xlabels[i],
-		    		x: ylabels[i]
-			    	}]
-		    })
-		  	}
-		    myChart.update();
+
 			</script>
 	    </div>
 	    
