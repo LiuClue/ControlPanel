@@ -38,94 +38,73 @@
 	</head>
 	<body>	   
 		<div class="container" style="width:100%; height:65vh;">	
-	    <h1>Light Sensor History</h1>
-	    
-	    <!--Set canvas for chart--> 
-			<canvas id="chart" style="width: 100%; height: 65vh; background: #222; border: 1px solid #555652; margin-top: 10px;"></canvas>
-
-	    <!--script to fill chart with data--> 
-			<script>
-				var ctx = document.getElementById("chart").getContext('2d');
-				var ylabels =[<?php echo $intensity;?>];
-				var xlabels =[<?php echo $date;?>];
-			  
-    		var myChart = new Chart(ctx, {
-        	type: 'line',
-		      data: {
-		    	  labels: xlabels,
-		        datasets: 
-		       	[{
-		       		// filling data with points, Needs to be changed to a looped system
-		      		data: [{
-			      		x: xlabels[0],
-		    				y: ylabels[0]},
-		    			{
-			         	x: xlabels[1],
-		    				y: ylabels[1]},
-		    			{
-			          x: xlabels[2],
-		    				y: ylabels[2]},
-		    			{
-			          x: xlabels[3],
-		    				y: ylabels[3]},
-		    			{
-			          x: xlabels[4],
-		    				y: ylabels[4]},
-		    			{
-			          x: xlabels[5],
-		    				y: ylabels[6]},
-		    			{
-			          x: xlabels[7],
-		    				y: ylabels[7]},
-		    			{
-			          x: xlabels[8],
-		    				y: ylabels[8]},
-		    			{
-			          x: xlabels[9],
-		    				y: ylabels[9]},
-		    			{
-			          x: xlabels[10],
-		    				y: ylabels[10]},
-		    			{
-			          x: xlabels[11],
-		    				y: ylabels[11]},
-		    			{
-			          x: xlabels[12],
-		    				y: ylabels[12]},
-		    			{
-			          x: xlabels[13],
-		    				y: ylabels[13]},
-		    			{
-			          x: xlabels[14],
-		    				y: ylabels[14]},
-		    			{
-			          x: xlabels[15],
-		    				y: ylabels[15]
-		    			}],
-							label: 'Light Intensity',
-		          backgroundColor: 'transparent',
-		          borderColor:'rgba(255,99,132)',
-		          borderWidth: 3
-						}]
-		     	},
-		      options: {
-		      	scales: {
-		        	xAxes: [{
-		        		type: 'time',
-		        		time: {
-//									Range for data being displayed. Will be changed to 24hrs from current date
-//		        			min: xlabels[10],
-//		        			max: xlabels[0],
-		        			displayFormats: 
-		        			{
-		        				second: 'MMM D h:mm:ss a'
-		        			}
-		        		},
-		        	}]
-		        }
-		       }
-		    });
-			</script>
+	    	<h1>Light Sensor History</h1>
+	    	<!--Set canvas for chart--> 
+			<canvas id="canvas"></canvas>
 		</div>
+		<script>
+			var ylabels =[<?php echo $intensity;?>];
+			var xlabels =[<?php echo $date;?>];
+			var config = {
+				type: 'line',
+				data: {
+					datasets: [{
+						label: 'Intensity',
+		        		backgroundColor: 'transparent',
+		          		borderColor:'rgba(255,99,132)',
+						fill: false,
+						data: [{
+							x: xlabels[0],
+							y: ylabels[0]
+						},{
+							x: xlabels[1],
+							y: ylabels[1]
+						}]
+					}]
+				},
+				options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Time Point Data'
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						},
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							}
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'value'
+						}
+					}]
+				}
+			}
+			}
+			window.onload = function() {
+				var ctx = document.getElementById('canvas').getContext('2d');
+				window.myLine = new Chart(ctx, config);
+			}
+			for(var i = 0; i < xlabels.length; i++){
+				config.data.datasets[0].data.push({
+					x: xlabels[i],
+					y: ylabels[i]
+				})
+				console.log(5 + 6);
+			}
+			window.myLine.update();
+		</script>
 	</body>
 </html>
