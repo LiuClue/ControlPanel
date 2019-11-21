@@ -37,12 +37,19 @@
 
 	</head>
 	<body>	   
-		<div class="container" style="width:100%; height:65vh;">	
-	    	<h1>Light Sensor History</h1>
-	    	<!--Set canvas for chart--> 
+		<div class="container" style="width:80%">
 			<canvas id="canvas"></canvas>
+			<br>
+			<button id="addData">Add Data</button>
 		</div>
 		<script>
+			var today = new Date();
+			var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			var yestardate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-1);
+			var time = (today.getHours()) + ":" + today.getMinutes() + ":" + today.getSeconds();
+			var dateTime = date+' '+time;
+			var yestardateTime = yestardate+' '+time;
+			
 			var ylabels =[<?php echo $intensity;?>];
 			var xlabels =[<?php echo $date;?>];
 			var config = {
@@ -53,20 +60,14 @@
 		        		backgroundColor: 'transparent',
 		          		borderColor:'rgba(255,99,132)',
 						fill: false,
-						data: [{
-							x: xlabels[0],
-							y: ylabels[0]
-						},{
-							x: xlabels[1],
-							y: ylabels[1]
-						}]
+						data: [{}]
 					}]
 				},
 				options: {
 				responsive: true,
 				title: {
 					display: true,
-					text: 'Chart.js Time Point Data'
+					text: dateTime
 				},
 				scales: {
 					xAxes: [{
@@ -74,20 +75,20 @@
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: 'Date'
+							labelString: 'Time'
 						},
 						ticks: {
 							major: {
 								fontStyle: 'bold',
 								fontColor: '#FF0000'
-							}
+							}	
 						}
 					}],
 					yAxes: [{
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: 'value'
+							labelString: 'Intensity'
 						}
 					}]
 				}
@@ -97,14 +98,17 @@
 				var ctx = document.getElementById('canvas').getContext('2d');
 				window.myLine = new Chart(ctx, config);
 			}
+
+   		document.getElementById('addData').addEventListener('click', function() {
+		
 			for(var i = 0; i < xlabels.length; i++){
 				config.data.datasets[0].data.push({
 					x: xlabels[i],
 					y: ylabels[i]
 				})
-				console.log(5 + 6);
 			}
 			window.myLine.update();
+			});
 		</script>
 	</body>
 </html>
