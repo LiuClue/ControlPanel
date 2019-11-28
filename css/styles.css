@@ -7,9 +7,43 @@ body{
           background: #555652;
       }
 
-.container {
-        color: #E8E9EB;
-        background: #222;
-        /*border: #555652 1px solid;
-        padding: 10px;*/
-      }
+h1{
+	font-size: 400%;
+}
+
+ul{
+	padding:0px;
+  list-style: none;
+}
+
+li{
+	display: inline-block;
+}
+/* Ripple effect */
+.ripple {
+  background-position: center;
+  transition: background 0.8s;
+}
+.ripple:hover {
+  background: white radial-gradient(circle, transparent 1%,  #f2f3f2 1%) center/15000%;
+  color: #555652;
+}
+.ripple:active {
+  background-color: #555652;
+  background-size: 100%;
+  transition: background 0s;
+}
+
+/* Button style */
+button {
+	width: 250px;
+  	border: 4px solid white;
+  	border-radius: 2px;
+	padding: 40px 0px;
+	font-size: 40px;
+  	cursor: pointer;
+ 	color: white;
+ 	background-color: #555652;
+ 	box-shadow: 0 0 4px #999;
+	outline: none;
+}
