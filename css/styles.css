@@ -46,4 +46,5 @@ button {
  	background-color: #555652;
  	box-shadow: 0 0 4px #999;
 	outline: none;
+	display:inline-block;
 }

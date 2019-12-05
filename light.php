@@ -2,24 +2,24 @@
 	date_default_timezone_set("America/Toronto");
 	echo "The time is " . date("Y/m/d h:i:sa");
 	/* Database connection settings */
-	$host = 'localhost';
+	$host = '169.254.94.198'; 
 	$user = 'root';
-	$pass = '';
-	$db = 'db';
+	$pass = 'password';
+	$db = 'sysc';
 	$mysqli = new mysqli($host,$user,$pass,$db) or die($mysqli->error);
 
 	$intensity = '';
 	$date = '';
 
 	//query to get data from the table
-	$sql = "SELECT * FROM `light` ORDER BY date DESC";
+	$sql = "SELECT * FROM `light` ORDER BY currDate, currTime DESC";
     $result = mysqli_query($mysqli, $sql);
 
 	//loop through the returned data
 	while ($row = mysqli_fetch_array($result)) {
-
+		$tempDate = date('Y-m-d H:i:s', strtotime("$row[currDate] $row[currTime]"));
 		$intensity = $intensity . '"'. $row['intensity'].'",';
-		$date = $date . '"'. $row['date'].'",';
+		$date = $date . '"'. $tempDate.'",';
 	}
 
 	$intensity = trim($intensity,",");
@@ -29,6 +29,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	<meta http-equiv="refresh" content="30">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 		<title>Sensor Display</title>
@@ -37,100 +38,83 @@
 
 	</head>
 	<body>	   
-		<div class="container">	
-	    <h1>Light Sensor History</h1>
-	    
-	    <!--Set canvas for chart--> 
-			<canvas id="chart" style="width: 100%; height: 7	0vh; background: #222; border: 1px solid #555652; margin-top: 10px;"></canvas>
 
-	    <!--script to fill chart with data--> 
-			<script>
-				var ctx = document.getElementById("chart").getContext('2d');
-				var ylabels =[<?php echo $intensity;?>];
-				var xlabels =[<?php echo $date;?>];
-			  
-    		var myChart = new Chart(ctx, {
-        	type: 'line',
-		      data: {
-		    	  labels: xlabels,
-		        datasets: 
-		       	[{
-		       		// filling data with points, Needs to be changed to a looped system
-		      		data: [{
-			      		x: xlabels[0],
-		    				y: ylabels[0]},
-		    			{
-			         	x: xlabels[1],
-		    				y: ylabels[1]},
-		    			{
-			          x: xlabels[2],
-		    				y: ylabels[2]},
-		    			{
-			          x: xlabels[3],
-		    				y: ylabels[3]},
-		    			{
-			          x: xlabels[4],
-		    				y: ylabels[4]},
-		    			{
-			          x: xlabels[5],
-		    				y: ylabels[6]},
-		    			{
-			          x: xlabels[7],
-		    				y: ylabels[7]},
-		    			{
-			          x: xlabels[8],
-		    				y: ylabels[8]},
-		    			{
-			          x: xlabels[9],
-		    				y: ylabels[9]},
-		    			{
-			          x: xlabels[10],
-		    				y: ylabels[10]},
-		    			{
-			          x: xlabels[11],
-		    				y: ylabels[11]},
-		    			{
-			          x: xlabels[12],
-		    				y: ylabels[12]},
-		    			{
-			          x: xlabels[13],
-		    				y: ylabels[13]},
-		    			{
-			          x: xlabels[14],
-		    				y: ylabels[14]},
-		    			{
-			          x: xlabels[15],
-		    				y: ylabels[15]
-		    			}],
-							label: 'Light Intensity',
-		          backgroundColor: 'transparent',
-		          borderColor:'rgba(255,99,132)',
-		          borderWidth: 3
-						}]
-		     	},
-		      options: {
-		      	scales: {
-		        	xAxes: [{
-		        		type: 'time',
-		        		time: {
-//									Range for data being displayed. Will be changed to 24hrs from current date
-//		        			min: xlabels[10],
-//		        			max: xlabels[0],
-		        			displayFormats: 
-		        			{
-		        				second: 'MMM D h:mm:ss a'
-		        			}
-		        		},
-		        	}]
-		        }
-		       }
-		    });
+		<div class="container" style="width:80%">
+			<canvas id="canvas"></canvas>
 
-
-			setTimeout(function(){
-   				console.log("test")
-			}, 5000);
-			</script>
+				<form action = "/index.php">
+					<button id="addData" class="ripple">Home</button>
+				</form>
 		</div>
+		<script>
+			var today = new Date();
+			var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			var yestardate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-1);
+			var time = (today.getHours()) + ":" + today.getMinutes() + ":" + today.getSeconds();
+			var dateTime = date+' '+time;
+			var yestardateTime = yestardate+' '+time;
+			
+			var ylabels =[<?php echo $intensity;?>];
+			var xlabels =[<?php echo $date;?>];
+			var config = {
+				type: 'line',
+				data: {
+					datasets: [{
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth: 2,
+						label: 'Intensity',
+		        		backgroundColor: 'transparent',
+		          		borderColor:'rgba(255,99,132)',
+						fill: false,
+						data: [{}]
+					}]
+				},
+				options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: dateTime
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						},
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							}	
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Intensity'
+						}
+					}]
+				}
+			}
+			}
+			window.onload = function() {
+				var ctx = document.getElementById('canvas').getContext('2d');
+				window.myLine = new Chart(ctx, config);
+			}
+			
+			for(var i = 0; i < xlabels.length; i++){
+				config.data.datasets[0].data.push({
+					x: xlabels[i],
+					y: ylabels[i]
+				})
+			}
+			window.myLine.update();
+			;
+		</script>
 	</body>
 </html>

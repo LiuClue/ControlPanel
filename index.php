@@ -21,11 +21,14 @@
       </div>
       <div class ="content">
         <ul>
-          <li><button class="ripple" type="submit">Light</button></li>
-          <li><button class="ripple" type="submit">Sensors</button></li>
-          <li><button class="ripple" type="submit">Usage</button></li>
-          <li><button class="ripple" type="submit">Patterns</button></li>
-        </u1>
+          <li><form action = "/light.php">
+          <button class="ripple" type="submit">Light</button></form></li>
+          <li><form action = "/temperature.php">
+          <button class="ripple" type="submit">Temperature</button></form></li>
+          <li><form action = "/visitor.php">
+          <button class="ripple" type="submit">Visitor</button></form></li>
+          <li><form action = "/mail.php">
+          <button class="ripple" type="submit">Mail</button></form></li>        </u1>
       </div>
     </header>
 

@@ -2,24 +2,24 @@
 	date_default_timezone_set("America/Toronto");
 	echo "The time is " . date("Y/m/d h:i:sa");
 	/* Database connection settings */
-	$host = '169.254.7.110'; 
+	$host = '169.254.94.198'; 
 	$user = 'root';
 	$pass = 'password';
-	$db = 'db';
+	$db = 'sysc';
 	$mysqli = new mysqli($host,$user,$pass,$db) or die($mysqli->error);
 
 	$intensity = '';
 	$date = '';
 
 	//query to get data from the table
-	$sql = "SELECT * FROM `light` ORDER BY date DESC";
+	$sql = "SELECT * FROM `temperature` ORDER BY currDate, currTime DESC";
     $result = mysqli_query($mysqli, $sql);
 
 	//loop through the returned data
 	while ($row = mysqli_fetch_array($result)) {
-
-		$intensity = $intensity . '"'. $row['intensity'].'",';
-		$date = $date . '"'. $row['date'].'",';
+		$tempDate = date('Y-m-d H:i:s', strtotime("$row[currDate] $row[currTime]"));
+		$intensity = $intensity . '"'. $row['currTemp'].'",';
+		$date = $date . '"'. $tempDate.'",';
 	}
 
 	$intensity = trim($intensity,",");
@@ -29,6 +29,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	<meta http-equiv="refresh" content="30">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 		<title>Sensor Display</title>
@@ -37,10 +38,13 @@
 
 	</head>
 	<body>	   
+
 		<div class="container" style="width:80%">
 			<canvas id="canvas"></canvas>
-			<br>
-			<button id="addData">Add Data</button>
+
+        	<form action = "/index.php">
+					<button id="addData" class="ripple">Home</button>
+				</form>
 		</div>
 		<script>
 			var today = new Date();
@@ -56,6 +60,10 @@
 				type: 'line',
 				data: {
 					datasets: [{
+						pointRadius: 1,
+						fill: false,
+						lineTension: 0,
+						borderWidth: 2,
 						label: 'Intensity',
 		        		backgroundColor: 'transparent',
 		          		borderColor:'rgba(255,99,132)',
@@ -98,9 +106,7 @@
 				var ctx = document.getElementById('canvas').getContext('2d');
 				window.myLine = new Chart(ctx, config);
 			}
-
-   		document.getElementById('addData').addEventListener('click', function() {
-		
+			
 			for(var i = 0; i < xlabels.length; i++){
 				config.data.datasets[0].data.push({
 					x: xlabels[i],
@@ -108,7 +114,7 @@
 				})
 			}
 			window.myLine.update();
-			});
+			;
 		</script>
 	</body>
 </html>
